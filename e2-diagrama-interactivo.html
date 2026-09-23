@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>E2 · Diagrama interactivo — Objetivos de la contabilidad de costos y clasificación del costo</title>
 <style>
-  :root { --azul:#003366; --rojo:#b71c1c; --verde:#1b5e20; --ambar:#e65100; }
+  :root { --azul:#003366; --rojo:#b71c1c; --verde:#1b5e20; --ambar:#e65100; --morado:#4527a0; }
   * { box-sizing:border-box; }
   body { font-family:'Segoe UI',Roboto,Arial,sans-serif; margin:0; background:#fafafa; color:#212121; }
   header { background:var(--azul); color:#fff; padding:18px 28px; }
@@ -13,19 +13,16 @@
   header p { margin:4px 0 0; font-size:.85rem; opacity:.9; }
   .seccion { padding:22px 28px; }
   .seccion h2 { color:var(--azul); border-bottom:2px solid var(--azul); padding-bottom:6px; }
-  .aviso { background:#fff3e0; border-left:4px solid var(--ambar); padding:10px 14px; border-radius:0 8px 8px 0; font-size:.88rem; }
 
-  /* ===== Parte A: diagrama central + nodos conectados ===== */
-  .diagrama { background:#fff; border:1px solid #cfd8dc; border-radius:12px; padding:26px 20px; display:flex; flex-direction:column; align-items:center; gap:0; }
-  .nodo-central { background:var(--azul); color:#fff; border-radius:14px; padding:16px 30px; text-align:center; font-weight:700; font-size:1.05rem; max-width:520px; box-shadow:0 2px 6px rgba(0,0,0,.25); }
-  .nodo-central small { display:block; font-weight:400; font-size:.78rem; opacity:.85; margin-top:4px; }
-  .conector { width:4px; height:34px; background:#90a4ae; position:relative; }
-  .conector::after { content:''; position:absolute; bottom:-1px; left:-5px; border:7px solid transparent; border-top-color:#90a4ae; }
-  .nodos { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; max-width:1100px; }
-  .nodo { width:240px; background:#eceff1; border:2px solid var(--azul); border-radius:12px; padding:12px 14px; cursor:pointer; transition:.15s; position:relative; }
+  /* ===== Diagrama único: de la naturaleza del costo a los objetivos ===== */
+  .lienzo { background:#fff; border:1px solid #cfd8dc; border-radius:12px; padding:24px 20px 26px; display:flex; flex-direction:column; align-items:center; }
+  .fila { width:100%; max-width:1100px; }
+  .fila-titulo { text-align:center; font-size:.8rem; letter-spacing:.06em; text-transform:uppercase; color:#607d8b; margin:0 0 10px; font-weight:700; }
+  .nodos { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; }
+  .nodo { width:240px; background:#eceff1; border:2px solid var(--azul); border-radius:12px; padding:12px 14px; cursor:pointer; transition:.15s; }
   .nodo:hover { transform:translateY(-3px); box-shadow:0 4px 10px rgba(0,0,0,.15); }
-  .nodo h3 { margin:0 0 6px; font-size:.95rem; color:var(--azul); display:flex; align-items:center; justify-content:space-between; }
-  .nodo h3 .plus { font-size:1.1rem; color:var(--ambar); }
+  .nodo h3 { margin:0 0 6px; font-size:.95rem; color:var(--azul); display:flex; align-items:center; justify-content:space-between; gap:6px; }
+  .nodo h3 .plus { font-size:1.1rem; color:var(--ambar); flex-shrink:0; }
   .nodo p { margin:0; font-size:.82rem; color:#455a64; }
   .nodo .detalle { max-height:0; overflow:hidden; transition:max-height .3s ease; }
   .nodo.abierto .detalle { max-height:320px; }
@@ -33,26 +30,34 @@
   .detalle-inner { padding-top:10px; margin-top:10px; border-top:1px dashed #b0bec5; font-size:.82rem; line-height:1.5; color:#37474f; }
   .detalle-inner em { display:block; margin-top:6px; font-size:.75rem; color:#607d8b; }
 
-  /* ===== Parte B: clasificador visual de conceptos ===== */
-  .clasificador { background:#fff; border:1px solid #cfd8dc; border-radius:12px; padding:20px 22px; }
-  .clasificador h3 { margin-top:0; color:var(--rojo); }
-  .tablero { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin-bottom:16px; }
-  .conceptos { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; min-height:40px; }
+  .conector-fila { display:flex; flex-direction:column; align-items:center; margin:6px 0; }
+  .conector { width:4px; height:30px; background:#90a4ae; position:relative; transition:background .4s; }
+  .conector::after { content:''; position:absolute; bottom:-1px; left:-5px; border:7px solid transparent; border-top-color:#90a4ae; transition:border-top-color .4s; }
+  .conector-fila .etiqueta-conector { font-size:.75rem; color:#78909c; margin-top:6px; font-style:italic; transition:color .4s; }
+  .conector-fila.desbloqueado .conector { background:var(--verde); }
+  .conector-fila.desbloqueado .conector::after { border-top-color:var(--verde); }
+  .conector-fila.desbloqueado .etiqueta-conector { color:var(--verde); font-weight:700; }
+
+  .zona { border:2px dashed #b0bec5; border-radius:12px; padding:10px 12px; min-height:118px; background:#fafafa; transition:.2s; }
+  .zona.sobre { background:#e3f2fd; border-color:#1e88e5; }
+  .zona h4 { margin:0 0 8px; font-size:.88rem; }
+  .zona.verde { border-color:var(--verde); background:#f1f8e9; } .zona.verde h4 { color:var(--verde); }
+  .zona.rojo { border-color:var(--rojo); background:#ffebee; } .zona.rojo h4 { color:var(--rojo); }
+  .zona.morado { border-color:var(--morado); background:#ede7f6; } .zona.morado h4 { color:var(--morado); }
+  .zona.ambar { border-color:var(--ambar); background:#fff3e0; } .zona.ambar h4 { color:var(--ambar); }
+  .zona .asignado { display:inline-block; margin:3px; padding:4px 10px; border-radius:14px; background:#fff; border:1px solid #90a4ae; font-size:.78rem; cursor:pointer; }
+  .zona .asignado:hover { background:#ffebee; border-color:var(--rojo); }
+
+  .conceptos { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:14px; min-height:40px; }
   .tarjeta { padding:8px 14px; background:#eceff1; border:1px solid #b0bec5; border-radius:20px; font-size:.85rem; cursor:pointer; user-select:none; transition:.15s; }
   .tarjeta:hover { background:#e3f2fd; border-color:#64b5f6; }
   .tarjeta.asignada { opacity:.35; pointer-events:none; text-decoration:line-through; }
-  .zona { border:2px dashed #b0bec5; border-radius:10px; padding:10px 12px; min-height:120px; background:#fafafa; }
-  .zona h4 { margin:0 0 8px; font-size:.9rem; }
-  .zona.verde { border-color:var(--verde); background:#f1f8e9; } .zona.verde h4 { color:var(--verde); }
-  .zona.rojo { border-color:var(--rojo); background:#ffebee; } .zona.rojo h4 { color:var(--rojo); }
-  .zona.ambar { border-color:var(--ambar); background:#fff3e0; } .zona.ambar h4 { color:var(--ambar); }
-  .zona .asignado { display:inline-block; margin:3px 3px; padding:4px 10px; border-radius:14px; background:#fff; border:1px solid #90a4ae; font-size:.8rem; cursor:pointer; }
-  .zona .asignado:hover { background:#ffebee; border-color:var(--rojo); }
-  .barra-resultado { display:flex; align-items:center; gap:14px; margin-top:8px; }
+
+  .barra-resultado { display:flex; align-items:center; gap:14px; margin-top:18px; flex-wrap:wrap; justify-content:center; }
   button.accion { padding:9px 18px; background:var(--azul); color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:.9rem; }
   button.accion.sec { background:#607d8b; }
-  #veredicto { font-weight:600; }
-  .leyenda { margin-top:14px; font-size:.78rem; color:#607d8b; line-height:1.5; }
+  #veredicto { font-weight:600; text-align:center; }
+  .leyenda { margin-top:12px; font-size:.78rem; color:#607d8b; line-height:1.5; text-align:center; }
 
   footer { padding:16px 28px; font-size:.8rem; color:#607d8b; line-height:1.5; }
   footer strong { color:#37474f; }
@@ -60,62 +65,79 @@
 </head>
 <body>
 <header>
-  <h1>Diagrama interactivo: objetivos de la contabilidad de costos y clasificación del costo por su naturaleza</h1>
-  <p>Guía 3 · Universidad EAN · Grupo 1 · 2026 · Interacción: pulse cada recuadro (+) para desplegar información y clasifique los conceptos arrastrándolos/clicándolos a su categoría.</p>
+  <h1>Diagrama interactivo: del costo y su naturaleza a los objetivos de la contabilidad de costos</h1>
+  <p>Guía 3 · Universidad EAN · Grupo 1 · 2026 · Un solo diagrama: clasifique los conceptos en su naturaleza (base) y pulse los recuadros (+) para desplegar los objetivos que esa medición hace posibles.</p>
 </header>
 
 <div class="seccion">
-  <h2>Parte A — Diagrama central: objetivos de la contabilidad de costos</h2>
-  <div class="aviso">Los recuadros conectados al diagrama central despliegan <strong>información adicional</strong> al hacer clic: así se distribuye el contenido en varios niveles de navegación sin sobrecargar el diseño.</div>
-  <div class="diagrama">
-    <div class="nodo-central">CONTABILIDAD DE COSTOS<small>Objetivos que soportan la toma de decisiones</small></div>
-    <div class="conector"></div>
-    <div class="nodos">
-      <div class="nodo" onclick="toggle(this)">
-        <h3>1. Determinar el costo de los productos <span class="plus">+</span></h3>
-        <p>Valuar inventarios y costo unitario</p>
-        <div class="detalle"><div class="detalle-inner">Acumula los tres elementos del costo —materias primas directas (MPD), mano de obra directa (MOD) y costos indirectos de fabricación (CIF)— a través del flujo: Inventario de Materias Primas → Productos en Proceso → Productos Terminados → Costo de Ventas. Con ello calcula el costo unitario y valúa los inventarios del Balance General.
-          <em>Reveles López (2017, cap. 1)</em></div></div>
-      </div>
-      <div class="nodo" onclick="toggle(this)">
-        <h3>2. Base para fijar precios y mezcla <span class="plus">+</span></h3>
-        <p>Decisiones de pricing y líneas de producto</p>
-        <div class="detalle"><div class="detalle-inner">El costo unitario y el margen de contribución permiten fijar precios de venta, aceptar o rechazar órdenes especiales y decidir qué líneas mantener, potenciar o eliminar.
-          <em>Reveles López (2017, cap. 1)</em></div></div>
-      </div>
-      <div class="nodo" onclick="toggle(this)">
-        <h3>3. Control y planeación <span class="plus">+</span></h3>
-        <p>Estándares, presupuestos y desviaciones</p>
-        <div class="detalle"><div class="detalle-inner">Los costos estándar y los presupuestos permiten comparar lo real contra lo planeado, detectar desviaciones y aplicar medidas correctivas por centro de responsabilidad.
-          <em>Mendoza Roca (2017, cap. 1)</em></div></div>
-      </div>
-      <div class="nodo" onclick="toggle(this)">
-        <h3>4. Medición de resultados por periodo <span class="plus">+</span></h3>
-        <p>Costeo absorbente vs. variable</p>
-        <div class="detalle"><div class="detalle-inner">Separar costos de producto (inventariables) de costos del periodo (expensados) hace posible preparar el Estado de Resultados por costeo total (absorbente) o variable.
-          <em>Reveles López (2017, cap. 1)</em></div></div>
-      </div>
-    </div>
-  </div>
-</div>
+  <h2>Diagrama: la clasificación del costo por su naturaleza sustenta los objetivos de la contabilidad de costos</h2>
 
-<div class="seccion">
-  <h2>Parte B — Clasificador interactivo por naturaleza del costo</h2>
-  <div class="clasificador">
-    <h3>Arrastre o pulse los conceptos y colóquelos en su categoría</h3>
-    <div class="conceptos" id="conceptos"></div>
-    <div class="tablero">
-      <div class="zona verde" data-cat="MPD"><h4>Materia Prima Directa</h4><div class="drop" ondrop="soltar(event,'MPD')" ondragover="permite(event)"></div></div>
-      <div class="zona rojo" data-cat="MOD"><h4>Mano de Obra Directa</h4><div class="drop" ondrop="soltar(event,'MOD')" ondragover="permite(event)"></div></div>
-      <div class="zona" data-cat="CIF" style="border-color:#4527a0; background:#ede7f6;"><h4 style="color:#4527a0;">Costos Indirectos de Fabricación</h4><div class="drop" ondrop="soltar(event,'CIF')" ondragover="permite(event)"></div></div>
-      <div class="zona ambar" data-cat="GASTO"><h4>Costo del Periodo (Gasto)</h4><div class="drop" ondrop="soltar(event,'GASTO')" ondragover="permite(event)"></div></div>
+  <div class="lienzo">
+
+    <!-- Nivel 1: OBJETIVOS -->
+    <div class="fila">
+      <p class="fila-titulo">¿Para qué sirve medir el costo? · Objetivos de la contabilidad de costos</p>
+      <div class="nodos">
+        <div class="nodo" onclick="toggle(this)">
+          <h3>1. Determinar el costo de los productos <span class="plus">+</span></h3>
+          <p>Valuar inventarios y costo unitario</p>
+          <div class="detalle"><div class="detalle-inner">Acumula los tres elementos del costo —materias primas directas (MPD), mano de obra directa (MOD) y costos indirectos de fabricación (CIF)— a través del flujo: Inventario de Materias Primas → Productos en Proceso → Productos Terminados → Costo de Ventas. Con ello calcula el costo unitario y valúa los inventarios del Balance General.
+            <em>Reveles López (2017, cap. 1)</em></div></div>
+        </div>
+        <div class="nodo" onclick="toggle(this)">
+          <h3>2. Base para fijar precios y mezcla <span class="plus">+</span></h3>
+          <p>Decisiones de pricing y líneas de producto</p>
+          <div class="detalle"><div class="detalle-inner">El costo unitario y el margen de contribución permiten fijar precios de venta, aceptar o rechazar órdenes especiales y decidir qué líneas mantener, potenciar o eliminar.
+            <em>Reveles López (2017, cap. 1)</em></div></div>
+        </div>
+        <div class="nodo" onclick="toggle(this)">
+          <h3>3. Control y planeación <span class="plus">+</span></h3>
+          <p>Estándares, presupuestos y desviaciones</p>
+          <div class="detalle"><div class="detalle-inner">Los costos estándar y los presupuestos permiten comparar lo real contra lo planeado, detectar desviaciones y aplicar medidas correctivas por centro de responsabilidad.
+            <em>Mendoza Roca (2017, cap. 1)</em></div></div>
+        </div>
+        <div class="nodo" onclick="toggle(this)">
+          <h3>4. Medición de resultados por periodo <span class="plus">+</span></h3>
+          <p>Costeo absorbente vs. variable</p>
+          <div class="detalle"><div class="detalle-inner">Separar costos de producto (inventariables) de costos del periodo (expensados) hace posible preparar el Estado de Resultados por costeo total (absorbente) o variable.
+            <em>Reveles López (2017, cap. 1)</em></div></div>
+        </div>
+      </div>
     </div>
-    <div class="barra-resultado">
-      <button class="accion" onclick="calificar()">Calificar</button>
-      <button class="accion sec" onclick="reiniciar()">Reiniciar</button>
-      <div id="veredicto"></div>
+
+    <div class="conector-fila" id="conector1">
+      <div class="conector"></div>
+      <div class="etiqueta-conector" id="etiqueta1">cuando la clasificación es correcta, el costo unitario se vuelve confiable ↑</div>
     </div>
-    <div class="leyenda"><strong>Lectura de refuerzo:</strong> Reveles López (2017), capítulo 1 — "Conceptos de costo" (p. 21) y "Clasificación de los costos" (p. 27).</div>
+
+    <!-- Nivel 2: CLASIFICACIÓN POR NATURALEZA (zonas) -->
+    <div class="fila">
+      <p class="fila-titulo">¿Cuál es su naturaleza? · Clasificación del costo</p>
+      <div class="nodos">
+        <div class="zona verde" data-cat="MPD"><h4>Materia Prima Directa</h4><div class="drop" ondrop="soltar(event,'MPD')" ondragover="permite(event)"></div></div>
+        <div class="zona rojo" data-cat="MOD"><h4>Mano de Obra Directa</h4><div class="drop" ondrop="soltar(event,'MOD')" ondragover="permite(event)"></div></div>
+        <div class="zona morado" data-cat="CIF"><h4>Costos Indirectos de Fabricación</h4><div class="drop" ondrop="soltar(event,'CIF')" ondragover="permite(event)"></div></div>
+        <div class="zona ambar" data-cat="GASTO"><h4>Costo del Periodo (Gasto)</h4><div class="drop" ondrop="soltar(event,'GASTO')" ondragover="permite(event)"></div></div>
+      </div>
+    </div>
+
+    <div class="conector-fila">
+      <div class="conector"></div>
+      <div class="etiqueta-conector">cada concepto del caso debe ubicarse en su naturaleza ↓</div>
+    </div>
+
+    <!-- Nivel 3: CONCEPTOS DE PRÁCTICA -->
+    <div class="fila">
+      <p class="fila-titulo">Conceptos de la práctica · caso de producción de ron</p>
+      <div class="conceptos" id="conceptos"></div>
+      <div class="barra-resultado">
+        <button class="accion" onclick="calificar()">Calificar clasificación</button>
+        <button class="accion sec" onclick="reiniciar()">Reiniciar</button>
+        <div id="veredicto"></div>
+      </div>
+      <div class="leyenda"><strong>Lectura de refuerzo:</strong> Reveles López (2017), capítulo 1 — "Conceptos de costo" (p. 21) y "Clasificación de los costos" (p. 27).</div>
+    </div>
+
   </div>
 </div>
 
@@ -128,7 +150,7 @@
 <script>
 function toggle(n){ n.classList.toggle('abierto'); }
 
-/* ===== Parte B: clasificador ===== */
+/* ===== Clasificador integrado al diagrama ===== */
 const CONCEPTOS = [
   { id:'melaza', txt:'Melaza, agua y levadura (ron)', cat:'MPD', exp:'Forma parte físicamente del producto: materia prima directa.' },
   { id:'operarios', txt:'Salario de operarios de destilación', cat:'MOD', exp:'Mano de obra que transforma directamente la materia prima.' },
@@ -137,7 +159,7 @@ const CONCEPTOS = [
   { id:'publicidad', txt:'Publicidad y comisiones de ventas', cat:'GASTO', exp:'Gasto de mercadeo y ventas: del periodo.' },
   { id:'agua', txt:'Servicios públicos de la planta', cat:'CIF', exp:'Servicios de fábrica: ni MP ni MOD → CIF inventariable.' },
 ];
-let asignaciones = {};  // id -> cat
+let asignaciones = {};
 const NOMBRES = { MPD:'Materia Prima Directa', MOD:'Mano de Obra Directa', CIF:'Costos Indirectos de Fabricación', GASTO:'Costo del Periodo (Gasto)' };
 
 function iniciar() {
@@ -155,10 +177,16 @@ function iniciar() {
   });
   document.querySelectorAll('.zona').forEach(z => z.querySelector('.drop').innerHTML = '');
   document.getElementById('veredicto').textContent = '';
+  document.getElementById('conector1').classList.remove('desbloqueado');
 }
 let tapId = null;
 function modoTap(id){ tapId = id; document.getElementById('veredicto').textContent = 'Concepto seleccionado: pulse la categoría donde pertenece.'; }
-document.querySelectorAll('.zona').forEach(z => z.addEventListener('click', () => { if (tapId) soltarTap(tapId, z.dataset.cat); }));
+document.querySelectorAll('.zona').forEach(z => {
+  z.addEventListener('click', () => { if (tapId) soltarTap(tapId, z.dataset.cat); });
+  z.addEventListener('dragover', () => z.classList.add('sobre'));
+  z.addEventListener('dragleave', () => z.classList.remove('sobre'));
+  z.addEventListener('drop', () => z.classList.remove('sobre'));
+});
 
 function soltarTap(id, cat) {
   asignaciones[id] = cat;
@@ -188,8 +216,14 @@ function calificar() {
     else errores.push('"' + c.txt + '" → ' + NOMBRES[c.cat] + ': ' + c.exp);
   });
   let v = '✔ ' + ok + '/' + CONCEPTOS.length + ' correctas. ';
-  if (errores.length) { v += 'Repase:'; v += '<ul style="margin:6px 0 0 18px; padding:0">' + errores.map(e => '<li style="font-weight:400">' + e + '</li>').join('') + '</ul>'; }
+  if (errores.length) { v += 'Repase:'; v += '<ul style="margin:6px 0 0 18px; padding:0; text-align:left">' + errores.map(e => '<li style="font-weight:400">' + e + '</li>').join('') + '</ul>'; }
   document.getElementById('veredicto').innerHTML = v;
+  if (ok === CONCEPTOS.length) {
+    document.getElementById('conector1').classList.add('desbloqueado');
+    document.getElementById('etiqueta1').textContent = '✔ clasificación correcta: el costo unitario es confiable y habilita los objetivos ↑';
+  } else {
+    document.getElementById('conector1').classList.remove('desbloqueado');
+  }
 }
 function reiniciar(){ iniciar(); }
 iniciar();
