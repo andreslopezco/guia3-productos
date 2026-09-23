@@ -5,228 +5,180 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>E2 · Diagrama interactivo — Objetivos de la contabilidad de costos y clasificación del costo</title>
 <style>
-  :root { --azul:#003366; --rojo:#b71c1c; --verde:#1b5e20; --ambar:#e65100; --morado:#4527a0; }
-  * { box-sizing:border-box; }
-  body { font-family:'Segoe UI',Roboto,Arial,sans-serif; margin:0; background:#fafafa; color:#212121; }
-  header { background:var(--azul); color:#fff; padding:18px 28px; }
-  header h1 { margin:0; font-size:1.3rem; }
-  header p { margin:4px 0 0; font-size:.85rem; opacity:.9; }
-  .seccion { padding:22px 28px; }
-  .seccion h2 { color:var(--azul); border-bottom:2px solid var(--azul); padding-bottom:6px; }
-
-  /* ===== Diagrama único: de la naturaleza del costo a los objetivos ===== */
-  .lienzo { background:#fff; border:1px solid #cfd8dc; border-radius:12px; padding:24px 20px 26px; display:flex; flex-direction:column; align-items:center; }
-  .fila { width:100%; max-width:1100px; }
-  .fila-titulo { text-align:center; font-size:.8rem; letter-spacing:.06em; text-transform:uppercase; color:#607d8b; margin:0 0 10px; font-weight:700; }
-  .nodos { display:flex; flex-wrap:wrap; gap:14px; justify-content:center; }
-  .nodo { width:240px; background:#eceff1; border:2px solid var(--azul); border-radius:12px; padding:12px 14px; cursor:pointer; transition:.15s; }
-  .nodo:hover { transform:translateY(-3px); box-shadow:0 4px 10px rgba(0,0,0,.15); }
-  .nodo h3 { margin:0 0 6px; font-size:.95rem; color:var(--azul); display:flex; align-items:center; justify-content:space-between; gap:6px; }
-  .nodo h3 .plus { font-size:1.1rem; color:var(--ambar); flex-shrink:0; }
-  .nodo p { margin:0; font-size:.82rem; color:#455a64; }
-  .nodo .detalle { max-height:0; overflow:hidden; transition:max-height .3s ease; }
-  .nodo.abierto .detalle { max-height:320px; }
-  .nodo.abierto .plus { transform:rotate(45deg); }
-  .detalle-inner { padding-top:10px; margin-top:10px; border-top:1px dashed #b0bec5; font-size:.82rem; line-height:1.5; color:#37474f; }
-  .detalle-inner em { display:block; margin-top:6px; font-size:.75rem; color:#607d8b; }
-
-  .conector-fila { display:flex; flex-direction:column; align-items:center; margin:6px 0; }
-  .conector { width:4px; height:30px; background:#90a4ae; position:relative; transition:background .4s; }
-  .conector::after { content:''; position:absolute; bottom:-1px; left:-5px; border:7px solid transparent; border-top-color:#90a4ae; transition:border-top-color .4s; }
-  .conector-fila .etiqueta-conector { font-size:.75rem; color:#78909c; margin-top:6px; font-style:italic; transition:color .4s; }
-  .conector-fila.desbloqueado .conector { background:var(--verde); }
-  .conector-fila.desbloqueado .conector::after { border-top-color:var(--verde); }
-  .conector-fila.desbloqueado .etiqueta-conector { color:var(--verde); font-weight:700; }
-
-  .zona { border:2px dashed #b0bec5; border-radius:12px; padding:10px 12px; min-height:118px; background:#fafafa; transition:.2s; }
-  .zona.sobre { background:#e3f2fd; border-color:#1e88e5; }
-  .zona h4 { margin:0 0 8px; font-size:.88rem; }
-  .zona.verde { border-color:var(--verde); background:#f1f8e9; } .zona.verde h4 { color:var(--verde); }
-  .zona.rojo { border-color:var(--rojo); background:#ffebee; } .zona.rojo h4 { color:var(--rojo); }
-  .zona.morado { border-color:var(--morado); background:#ede7f6; } .zona.morado h4 { color:var(--morado); }
-  .zona.ambar { border-color:var(--ambar); background:#fff3e0; } .zona.ambar h4 { color:var(--ambar); }
-  .zona .asignado { display:inline-block; margin:3px; padding:4px 10px; border-radius:14px; background:#fff; border:1px solid #90a4ae; font-size:.78rem; cursor:pointer; }
-  .zona .asignado:hover { background:#ffebee; border-color:var(--rojo); }
-
-  .conceptos { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:14px; min-height:40px; }
-  .tarjeta { padding:8px 14px; background:#eceff1; border:1px solid #b0bec5; border-radius:20px; font-size:.85rem; cursor:pointer; user-select:none; transition:.15s; }
-  .tarjeta:hover { background:#e3f2fd; border-color:#64b5f6; }
-  .tarjeta.asignada { opacity:.35; pointer-events:none; text-decoration:line-through; }
-
-  .barra-resultado { display:flex; align-items:center; gap:14px; margin-top:18px; flex-wrap:wrap; justify-content:center; }
-  button.accion { padding:9px 18px; background:var(--azul); color:#fff; border:none; border-radius:8px; cursor:pointer; font-size:.9rem; }
-  button.accion.sec { background:#607d8b; }
-  #veredicto { font-weight:600; text-align:center; }
-  .leyenda { margin-top:12px; font-size:.78rem; color:#607d8b; line-height:1.5; text-align:center; }
-
-  footer { padding:16px 28px; font-size:.8rem; color:#607d8b; line-height:1.5; }
-  footer strong { color:#37474f; }
+:root{color-scheme:dark;--bg:#09121e;--panel:#111f30;--ink:#eff6ff;--muted:#b5c7db;--mint:#72efd0;--blue:#91c8ff;--violet:#cfb0ff;--amber:#ffcf83}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,'Segoe UI',sans-serif;line-height:1.55}button,a{-webkit-tap-highlight-color:transparent}button{font:inherit;color:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #fff;outline-offset:5px}header,main,footer{max-width:1500px;margin:auto;padding:28px 32px}header{padding-bottom:12px}.eyebrow{color:var(--mint);font-size:.76rem;letter-spacing:.13em;text-transform:uppercase;font-weight:700}h1{font-size:clamp(2rem,4vw,3.7rem);line-height:1.08;letter-spacing:-.04em;max-width:920px;margin:20px 0}h1 span{color:var(--mint)}.intro{color:var(--muted);max-width:780px}.toolbar{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.action{border:1px solid #66809b;border-radius:9px;background:#182d43;padding:10px 16px;min-height:44px}.primary{background:var(--mint);border-color:var(--mint);color:#06251d;font-weight:750}.action:hover{filter:brightness(1.15)}.status{min-height:3.5em;margin:18px 0;color:var(--muted);max-width:950px}.circuit{position:relative;isolation:isolate;border:1px solid #35495e;border-radius:20px;padding:24px;background:radial-gradient(ellipse at 52% 45%,#17323c88,transparent 50%),radial-gradient(#7394b21b 1px,transparent 1px);background-size:auto,20px 20px}.wires{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;overflow:visible}.wire{fill:none;stroke:#6987a5;stroke-width:1.6;opacity:.55}.wire.active{stroke:var(--mint);stroke-width:3;opacity:1;stroke-dasharray:8 7;animation:current 1.4s linear infinite}.wire.expense{stroke:var(--amber)}@keyframes current{to{stroke-dashoffset:-30}}.columns{display:grid;grid-template-columns:1.1fr .95fr 1.15fr 1.1fr;gap:54px}.column{min-width:0;display:flex;flex-direction:column;gap:16px}.column h2{font-size:.73rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 12px}.column h2 b{display:inline-grid;place-items:center;width:26px;height:26px;border:1px solid #617890;border-radius:50%;margin-right:6px}.node{position:relative;display:block;width:100%;text-align:left;background:#122235;border:1px solid #56718d;border-radius:12px;padding:15px;min-height:78px;box-shadow:0 5px 18px #0002;transition:border-color .2s,background .2s,box-shadow .2s}.node:hover,.node.selected{border-color:var(--mint);background:#193448;box-shadow:0 0 0 2px #72efd022}.node strong{display:block;font-size:.92rem;line-height:1.35}.node small{display:block;color:var(--muted);margin-top:7px;font-size:.76rem}.tag{display:block;font-size:.67rem;letter-spacing:.09em;font-weight:800;color:var(--mint);margin-bottom:6px}.mod .tag{color:var(--blue)}.cif .tag{color:var(--violet)}.expense .tag{color:var(--amber)}.nature{margin-top:8px}.nature .node{min-height:108px}.core{border:2px solid var(--mint);border-radius:24px;background:#13332f;text-align:center;padding:25px 12px;margin-top:25px}.core strong{font-size:1.3rem;letter-spacing:.03em}.core small{color:#c3e6dc}.formula{font-size:.76rem;text-align:center;color:var(--mint);margin:0}.flow{display:grid;gap:19px;margin:12px 0}.flow .node{min-height:55px;padding:10px 14px}.flow .node strong{font-size:.8rem}.expense-end{border-color:#a58049;background:#30291f;margin-top:12px}.objectives .node{min-height:120px}.objective-number{color:var(--mint);font-size:.72rem;display:block;margin-bottom:8px}.legend{display:flex;gap:20px;flex-wrap:wrap;color:var(--muted);font-size:.8rem;margin:20px 0 0}.legend span::before{content:'';display:inline-block;width:20px;height:2px;background:var(--mint);vertical-align:middle;margin-right:8px}.legend span:last-child::before{background:var(--amber)}.note{font-size:.85rem;color:var(--muted);margin-top:16px}footer{border-top:1px solid #35495e;font-size:.78rem;color:var(--muted);overflow-wrap:anywhere}footer p{max-width:1000px}a{color:var(--blue)}dialog{background:#132438;color:var(--ink);border:1px solid #7492af;border-radius:18px;padding:28px;width:min(580px,calc(100% - 32px));max-height:85vh;box-shadow:0 25px 100px #0008}dialog::backdrop{background:#030911c9;backdrop-filter:blur(4px)}dialog h2{font-size:1.55rem;line-height:1.25;margin:20px 0}dialog p{color:#d4e2f1}.dialog-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.dialog-top .eyebrow{margin:0}.related{display:flex;flex-wrap:wrap;gap:9px}.related .action{text-align:left;font-size:.85rem}.citation{font-size:.8rem;font-style:italic}.detail-label{font-size:.8rem;color:var(--mint);margin-top:24px}noscript{display:block;padding:20px;background:#30291f}
+@media(min-width:1051px){.nature .expense{margin-top:32px}.objectives{gap:24px}}
+@media(max-width:1050px) and (min-width:701px){.columns{gap:24px}.circuit{padding:18px}.node{padding:11px}header,main,footer{padding-left:20px;padding-right:20px}.node strong{font-size:.82rem}}
+@media(max-width:700px){header,main,footer{padding:22px 18px}.circuit{padding:20px 24px}.columns{grid-template-columns:1fr;gap:48px}.column{gap:18px}.column h2{background:var(--bg);padding:8px;border-radius:8px;margin-bottom:0}.node{min-height:70px}.nature .node,.objectives .node{min-height:85px}.core{margin-top:0}.wire{opacity:.5}.toolbar .action{flex:1}.status{min-height:6em;font-size:.88rem}.legend{gap:8px}.flow{gap:22px}.intro{font-size:.95rem}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 <header>
-  <h1>Diagrama interactivo: del costo y su naturaleza a los objetivos de la contabilidad de costos</h1>
-  <p>Guía 3 · Universidad EAN · Grupo 1 · 2026 · Un solo diagrama: clasifique los conceptos en su naturaleza (base) y pulse los recuadros (+) para desplegar los objetivos que esa medición hace posibles.</p>
+<p class="eyebrow">Guía 3 · Universidad EAN · Grupo 1 · 2026</p>
+<h1>El circuito del costo.<br><span>De su naturaleza a la decisión.</span></h1>
+<p class="intro">Explore cómo los recursos de una producción de ron se conectan con los objetivos de la contabilidad de costos. Pulse cualquier nodo para descubrir su explicación y seguir sus relaciones.</p>
 </header>
-
-<div class="seccion">
-  <h2>Diagrama: la clasificación del costo por su naturaleza sustenta los objetivos de la contabilidad de costos</h2>
-
-  <div class="lienzo">
-
-    <!-- Nivel 1: OBJETIVOS -->
-    <div class="fila">
-      <p class="fila-titulo">¿Para qué sirve medir el costo? · Objetivos de la contabilidad de costos</p>
-      <div class="nodos">
-        <div class="nodo" onclick="toggle(this)">
-          <h3>1. Determinar el costo de los productos <span class="plus">+</span></h3>
-          <p>Valuar inventarios y costo unitario</p>
-          <div class="detalle"><div class="detalle-inner">Acumula los tres elementos del costo —materias primas directas (MPD), mano de obra directa (MOD) y costos indirectos de fabricación (CIF)— a través del flujo: Inventario de Materias Primas → Productos en Proceso → Productos Terminados → Costo de Ventas. Con ello calcula el costo unitario y valúa los inventarios del Balance General.
-            <em>Reveles López (2017, cap. 1)</em></div></div>
-        </div>
-        <div class="nodo" onclick="toggle(this)">
-          <h3>2. Base para fijar precios y mezcla <span class="plus">+</span></h3>
-          <p>Decisiones de pricing y líneas de producto</p>
-          <div class="detalle"><div class="detalle-inner">El costo unitario y el margen de contribución permiten fijar precios de venta, aceptar o rechazar órdenes especiales y decidir qué líneas mantener, potenciar o eliminar.
-            <em>Reveles López (2017, cap. 1)</em></div></div>
-        </div>
-        <div class="nodo" onclick="toggle(this)">
-          <h3>3. Control y planeación <span class="plus">+</span></h3>
-          <p>Estándares, presupuestos y desviaciones</p>
-          <div class="detalle"><div class="detalle-inner">Los costos estándar y los presupuestos permiten comparar lo real contra lo planeado, detectar desviaciones y aplicar medidas correctivas por centro de responsabilidad.
-            <em>Mendoza Roca (2017, cap. 1)</em></div></div>
-        </div>
-        <div class="nodo" onclick="toggle(this)">
-          <h3>4. Medición de resultados por periodo <span class="plus">+</span></h3>
-          <p>Costeo absorbente vs. variable</p>
-          <div class="detalle"><div class="detalle-inner">Separar costos de producto (inventariables) de costos del periodo (expensados) hace posible preparar el Estado de Resultados por costeo total (absorbente) o variable.
-            <em>Reveles López (2017, cap. 1)</em></div></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="conector-fila" id="conector1">
-      <div class="conector"></div>
-      <div class="etiqueta-conector" id="etiqueta1">cuando la clasificación es correcta, el costo unitario se vuelve confiable ↑</div>
-    </div>
-
-    <!-- Nivel 2: CLASIFICACIÓN POR NATURALEZA (zonas) -->
-    <div class="fila">
-      <p class="fila-titulo">¿Cuál es su naturaleza? · Clasificación del costo</p>
-      <div class="nodos">
-        <div class="zona verde" data-cat="MPD"><h4>Materia Prima Directa</h4><div class="drop" ondrop="soltar(event,'MPD')" ondragover="permite(event)"></div></div>
-        <div class="zona rojo" data-cat="MOD"><h4>Mano de Obra Directa</h4><div class="drop" ondrop="soltar(event,'MOD')" ondragover="permite(event)"></div></div>
-        <div class="zona morado" data-cat="CIF"><h4>Costos Indirectos de Fabricación</h4><div class="drop" ondrop="soltar(event,'CIF')" ondragover="permite(event)"></div></div>
-        <div class="zona ambar" data-cat="GASTO"><h4>Costo del Periodo (Gasto)</h4><div class="drop" ondrop="soltar(event,'GASTO')" ondragover="permite(event)"></div></div>
-      </div>
-    </div>
-
-    <div class="conector-fila">
-      <div class="conector"></div>
-      <div class="etiqueta-conector">cada concepto del caso debe ubicarse en su naturaleza ↓</div>
-    </div>
-
-    <!-- Nivel 3: CONCEPTOS DE PRÁCTICA -->
-    <div class="fila">
-      <p class="fila-titulo">Conceptos de la práctica · caso de producción de ron</p>
-      <div class="conceptos" id="conceptos"></div>
-      <div class="barra-resultado">
-        <button class="accion" onclick="calificar()">Calificar clasificación</button>
-        <button class="accion sec" onclick="reiniciar()">Reiniciar</button>
-        <div id="veredicto"></div>
-      </div>
-      <div class="leyenda"><strong>Lectura de refuerzo:</strong> Reveles López (2017), capítulo 1 — "Conceptos de costo" (p. 21) y "Clasificación de los costos" (p. 27).</div>
-    </div>
-
-  </div>
+<main>
+<div class="toolbar" aria-label="Controles del recorrido">
+<button class="action primary" id="play" aria-label="Animar flujo completo">Animar flujo completo →</button>
+<button class="action" id="next" aria-label="Explorar el siguiente paso del circuito">Siguiente paso</button>
+<button class="action" id="reset" aria-label="Restablecer la vista completa del circuito">Ver circuito completo</button>
 </div>
-
+<p class="status" id="status" role="status" aria-live="polite">Un solo circuito, dos destinos: los costos del producto se inventarían; los gastos del periodo se expensan de inmediato.</p>
+<div class="circuit" id="circuit" aria-label="Diagrama del costo: conceptos, naturaleza, flujo y objetivos">
+<svg class="wires" id="wires" aria-hidden="true"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#91afc5"/></marker></defs></svg>
+<div class="columns">
+<div class="column sources"><h2><b>01</b> Recursos del caso</h2>
+<button class="node" data-node="melaza"><span class="tag">MPD ↗</span><strong>Melaza, agua y levadura</strong></button>
+<button class="node mod" data-node="operarios"><span class="tag">MOD ↗</span><strong>Salario de operarios de destilación</strong></button>
+<button class="node cif" data-node="carbonato"><span class="tag">CIF ↗</span><strong>Carbonato y barriles de producción</strong></button>
+<button class="node cif" data-node="servicios"><span class="tag">CIF ↗</span><strong>Servicios públicos de la planta</strong></button>
+<button class="node expense" data-node="gerente"><span class="tag">Gasto del periodo ↗</span><strong>Salario del gerente y contador</strong></button>
+<button class="node expense" data-node="publicidad"><span class="tag">Gasto del periodo ↗</span><strong>Publicidad y comisiones de ventas</strong></button>
+</div>
+<div class="column nature"><h2><b>02</b> Su naturaleza</h2>
+<button class="node" data-node="mpd"><span class="tag">MPD</span><strong>Materia Prima Directa</strong><small>Rastreable a cada unidad · inventariable</small></button>
+<button class="node mod" data-node="mod"><span class="tag">MOD</span><strong>Mano de Obra Directa</strong><small>Rastreable a cada unidad · inventariable</small></button>
+<p class="formula">MPD + MOD = costo primo</p>
+<button class="node cif" data-node="cif"><span class="tag">CIF</span><strong>Costos Indirectos de Fabricación</strong><small>No rastreables por unidad · inventariables</small></button>
+<button class="node expense" data-node="gasto"><span class="tag">Administración y ventas</span><strong>Gastos del periodo</strong><small>Nunca se inventarían</small></button>
+</div>
+<div class="column"><h2><b>03</b> Integración y flujo</h2>
+<button class="node core" data-node="costo"><span class="tag">MPD + MOD + CIF</span><strong>COSTO UNITARIO</strong><small>Solo estos tres elementos forman el costo del producto</small></button>
+<div class="flow">
+<button class="node" data-node="mp"><strong>Inventario de Materias Primas</strong></button>
+<button class="node" data-node="pe"><strong>Productos en Proceso</strong><small>Acumulan MPD + MOD + CIF</small></button>
+<button class="node" data-node="pt"><strong>Productos Terminados</strong></button>
+<button class="node" data-node="cv"><strong>Costo de Ventas</strong></button>
+</div>
+<button class="node expense expense-end" data-node="expensa"><span class="tag">Ruta del periodo</span><strong>Se expensa de inmediato</strong><small>Administración y ventas → resultados del periodo</small></button>
+</div>
+<div class="column objectives"><h2><b>04</b> Cuatro objetivos</h2>
+<button class="node" data-node="o1"><span class="objective-number">OBJETIVO 01 ↗</span><strong>Determinar el costo de los productos</strong><small>Valuar inventarios</small></button>
+<button class="node" data-node="o2"><span class="objective-number">OBJETIVO 02 ↗</span><strong>Base para fijar precios y mezcla</strong><small>Costo unitario y margen de contribución</small></button>
+<button class="node" data-node="o3"><span class="objective-number">OBJETIVO 03 ↗</span><strong>Control y planeación</strong><small>Estándares, presupuestos y desviaciones</small></button>
+<button class="node" data-node="o4"><span class="objective-number">OBJETIVO 04 ↗</span><strong>Medición de resultados por periodo</strong><small>Costeo total (absorbente) o variable</small></button>
+</div>
+</div>
+</div>
+<div class="legend" aria-label="Leyenda"><span>Ruta del costo del producto</span><span>Ruta del gasto del periodo</span></div>
+<p class="note">Las conexiones muestran relaciones contables, no magnitudes monetarias. El núcleo sintetiza la medición; la cadena de inventarios muestra el flujo del costo del producto.</p>
+<noscript>Active JavaScript para explorar las explicaciones y el recorrido. El diagrama muestra la clasificación y las conexiones conceptuales en sus nodos.</noscript>
+</main>
+<dialog id="detail" aria-labelledby="detail-title" aria-describedby="detail-text">
+<div class="dialog-top"><p class="eyebrow" id="detail-kind">Explorar conexión</p><button class="action" id="close" aria-label="Cerrar explicación">Cerrar ×</button></div>
+<h2 id="detail-title"></h2><p id="detail-text"></p><p class="citation" id="detail-citation"></p>
+<p class="detail-label">Continúe por una conexión</p><div class="related" id="related"></div>
+</dialog>
 <footer>
-  <strong>Referencias (APA 7):</strong><br>
-  Reveles López, R. (2017). <em>Análisis de los elementos del costo</em>. Instituto Mexicano de Contadores Públicos. Capítulo 1. Disponible en bases de datos E-libro: https://elibro-net.bdbiblioteca.universidadean.edu.co/es/ereader/bibliotecaean/116352<br>
-  Barrera Arias, G. S. (2026). <em>Tutoría No. 7A: Costos y presupuestos (Fase III)</em> [Diapositivas]. Universidad EAN.
+<strong>Referencias (APA 7):</strong>
+<p>Reveles López, R. (2017). <em>Análisis de los elementos del costo</em>. Instituto Mexicano de Contadores Públicos. Capítulo 1. Disponible en bases de datos E-libro: https://elibro-net.bdbiblioteca.universidadean.edu.co/es/ereader/bibliotecaean/116352</p>
+<p>Barrera Arias, G. S. (2026). <em>Tutoría No. 7A: Costos y presupuestos (Fase III)</em> [Diapositivas]. Universidad EAN.</p>
 </footer>
-
 <script>
-function toggle(n){ n.classList.toggle('abierto'); }
-
-/* ===== Clasificador integrado al diagrama ===== */
-const CONCEPTOS = [
-  { id:'melaza', txt:'Melaza, agua y levadura (ron)', cat:'MPD', exp:'Forma parte físicamente del producto: materia prima directa.' },
-  { id:'operarios', txt:'Salario de operarios de destilación', cat:'MOD', exp:'Mano de obra que transforma directamente la materia prima.' },
-  { id:'carbonato', txt:'Carbonato y barriles de producción', cat:'CIF', exp:'Insumos y envases indirectos: no rastreables por unidad → CIF.' },
-  { id:'gerente', txt:'Salario del gerente y contador', cat:'GASTO', exp:'Costo del periodo (administración): no se inventaría.' },
-  { id:'publicidad', txt:'Publicidad y comisiones de ventas', cat:'GASTO', exp:'Gasto de mercadeo y ventas: del periodo.' },
-  { id:'agua', txt:'Servicios públicos de la planta', cat:'CIF', exp:'Servicios de fábrica: ni MP ni MOD → CIF inventariable.' },
+'use strict';
+const $ = id => document.getElementById(id);
+const reference = 'Reveles López (2017, cap. 1)';
+const data = {
+melaza:['Caso de producción de ron','Melaza, agua y levadura → MPD. Se rastrean directamente a cada unidad y son inventariables (costo del producto).',['mpd']],
+operarios:['Caso de producción de ron','Salario de operarios de destilación → MOD. Se rastrea directamente a cada unidad y es inventariable (costo del producto).',['mod']],
+carbonato:['Caso de producción de ron','Carbonato y barriles de producción → CIF. Son necesarios para producir pero no rastreables por unidad; también son inventariables.',['cif']],
+servicios:['Caso de producción de ron','Servicios públicos de la planta → CIF. Son servicios de planta necesarios para producir pero no rastreables por unidad; también son inventariables.',['cif']],
+gerente:['Caso de producción de ron','Salario del gerente y contador → Gasto del periodo. Son gastos de administración: se expensan de inmediato, nunca se inventarían.',['gasto']],
+publicidad:['Caso de producción de ron','Publicidad y comisiones de ventas → Gasto del periodo. Son gastos de ventas: se expensan de inmediato, nunca se inventarían.',['gasto']],
+mpd:['Clasificación por naturaleza','Materia Prima Directa (MPD): se rastrea directamente a cada unidad → inventariable (costo del producto). MPD + MOD = costo primo.',['melaza','mod','costo']],
+mod:['Clasificación por naturaleza','Mano de Obra Directa (MOD): se rastrea directamente a cada unidad → inventariable (costo del producto). MPD + MOD = costo primo.',['operarios','mpd','costo']],
+cif:['Clasificación por naturaleza','Costos Indirectos de Fabricación (CIF): necesarios para producir pero no rastreables por unidad (insumos, servicios de planta) → también inventariables.',['carbonato','servicios','costo']],
+gasto:['Clasificación por naturaleza','Gastos de administración y ventas: costos del PERIODO, se expensan de inmediato, nunca se inventarían.',['gerente','publicidad','expensa']],
+costo:['Núcleo del circuito','Solo MPD + MOD + CIF forman el costo del producto; MPD + MOD = costo primo. Todo junto fluye al costo unitario que habilita los 4 objetivos.',['mpd','mod','cif','o1','o2','o3','o4']],
+mp:['Flujo del costo del producto','Inventario de Materias Primas → Productos en Proceso → Productos Terminados → Costo de Ventas. Los tres elementos —MPD, MOD y CIF— se acumulan a través de este flujo.',['pe','o1'],reference],
+pe:['Flujo del costo del producto','En Productos en Proceso se acumulan los tres elementos: MPD, MOD y CIF. El flujo continúa hacia Productos Terminados.',['mp','pt','costo'],reference],
+pt:['Flujo del costo del producto','Productos Terminados forma parte del flujo de inventarios: desde Productos en Proceso hacia Costo de Ventas.',['pe','cv','o1'],reference],
+cv:['Flujo del costo del producto','Costo de Ventas es el destino del flujo: Inventario de Materias Primas → Productos en Proceso → Productos Terminados → Costo de Ventas.',['pt','o4'],reference],
+expensa:['Destino del gasto del periodo','Los gastos de administración y ventas se expensan de inmediato. Nunca se inventarían ni forman parte de MPD + MOD + CIF. Separarlos del costo del producto permite medir los resultados por periodo.',['gasto','o4']],
+o1:['Objetivo 1 · Valuar inventarios','Acumula los tres elementos —MPD, MOD y CIF— a través del flujo: Inventario de Materias Primas → Productos en Proceso → Productos Terminados → Costo de Ventas. Calcula el costo unitario y valúa los inventarios del Balance General.',['costo','mp'],reference],
+o2:['Objetivo 2 · Precios y mezcla','El costo unitario y el margen de contribución permiten fijar precios de venta, aceptar o rechazar órdenes especiales y decidir qué líneas mantener, potenciar o eliminar.',['costo'],reference],
+o3:['Objetivo 3 · Control y planeación','Los costos estándar y los presupuestos permiten comparar lo real contra lo planeado, detectar desviaciones y aplicar medidas correctivas por centro de responsabilidad.',['costo'],'Mendoza Roca (2017, cap. 1)'],
+o4:['Objetivo 4 · Resultados por periodo','Separar costos de producto (inventariables) de costos del periodo (expensados) hace posible preparar el Estado de Resultados por costeo total (absorbente) o variable.',['costo','cv','expensa'],reference]
+};
+const nodes = new Map([...document.querySelectorAll('[data-node]')].map(n => [n.dataset.node,n]));
+const edges = [['melaza','mpd'],['operarios','mod'],['carbonato','cif'],['servicios','cif'],['gerente','gasto'],['publicidad','gasto'],['mpd','costo'],['mod','costo'],['cif','costo'],['gasto','expensa'],['mp','pe'],['pe','pt'],['pt','cv'],['costo','o1'],['costo','o2'],['costo','o3'],['costo','o4'],['expensa','o4']];
+let active = new Set(), timer = null, step = -1;
+const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+const steps = [
+[['melaza','mpd'],'La materia prima directa se rastrea a cada unidad: melaza, agua y levadura → MPD.'],
+[['operarios','mod'],'La mano de obra directa se rastrea a cada unidad: operarios de destilación → MOD. MPD + MOD = costo primo.'],
+[['carbonato','servicios','cif'],'Carbonato, barriles de producción y servicios públicos de la planta → CIF: también inventariables.'],
+[['mpd','mod','cif','costo'],'Solo MPD + MOD + CIF forman el costo del producto y alimentan el costo unitario.'],
+[['mp','pe'],'El flujo de inventarios parte de Materias Primas. En Productos en Proceso se acumulan MPD + MOD + CIF.'],
+[['pe','pt'],'El flujo del costo continúa de Productos en Proceso a Productos Terminados.'],
+[['pt','cv'],'Desde Productos Terminados, el flujo llega al Costo de Ventas.'],
+[['gerente','publicidad','gasto','expensa'],'Administración y ventas toman otra ruta: son gastos del periodo, se expensan de inmediato y nunca se inventarían.'],
+[['costo','o1'],'Objetivo 1: determinar el costo de los productos, calcular el costo unitario y valuar los inventarios del Balance General.'],
+[['costo','o2'],'Objetivo 2: el costo unitario y el margen de contribución apoyan precios, órdenes especiales y mezcla de líneas.'],
+[['costo','o3'],'Objetivo 3: estándares y presupuestos permiten comparar lo real contra lo planeado y corregir desviaciones.'],
+[['costo','expensa','o4'],'Objetivo 4: separar costos del producto y del periodo permite preparar el Estado de Resultados por costeo absorbente o variable.']
 ];
-let asignaciones = {};
-const NOMBRES = { MPD:'Materia Prima Directa', MOD:'Mano de Obra Directa', CIF:'Costos Indirectos de Fabricación', GASTO:'Costo del Periodo (Gasto)' };
-
-function iniciar() {
-  const cont = document.getElementById('conceptos');
-  cont.innerHTML = '';
-  asignaciones = {};
-  const lista = [...CONCEPTOS].sort(() => Math.random() - .5);
-  lista.forEach(c => {
-    const t = document.createElement('span');
-    t.className = 'tarjeta'; t.draggable = true; t.id = 't-' + c.id;
-    t.textContent = c.txt;
-    t.ondragstart = e => e.dataTransfer.setData('text/plain', c.id);
-    t.onclick = () => modoTap(c.id);
-    cont.appendChild(t);
-  });
-  document.querySelectorAll('.zona').forEach(z => z.querySelector('.drop').innerHTML = '');
-  document.getElementById('veredicto').textContent = '';
-  document.getElementById('conector1').classList.remove('desbloqueado');
+function highlight(ids){
+ active = new Set(ids);
+ nodes.forEach((node,id) => node.classList.toggle('selected',active.has(id)));
+ document.querySelectorAll('.wire').forEach(path => path.classList.toggle('active',active.has(path.dataset.from) && active.has(path.dataset.to)));
 }
-let tapId = null;
-function modoTap(id){ tapId = id; document.getElementById('veredicto').textContent = 'Concepto seleccionado: pulse la categoría donde pertenece.'; }
-document.querySelectorAll('.zona').forEach(z => {
-  z.addEventListener('click', () => { if (tapId) soltarTap(tapId, z.dataset.cat); });
-  z.addEventListener('dragover', () => z.classList.add('sobre'));
-  z.addEventListener('dragleave', () => z.classList.remove('sobre'));
-  z.addEventListener('drop', () => z.classList.remove('sobre'));
-});
-
-function soltarTap(id, cat) {
-  asignaciones[id] = cat;
-  const t = document.getElementById('t-' + id);
-  t.classList.add('asignada');
-  const chip = document.createElement('span');
-  chip.className = 'asignado';
-  chip.textContent = t.textContent + ' ✕';
-  chip.title = 'Quitar';
-  chip.onclick = e => { e.stopPropagation(); delete asignaciones[id]; t.classList.remove('asignada'); chip.remove(); };
-  z.querySelector('.drop').appendChild(chip);
-  tapId = null;
-  document.getElementById('veredicto').textContent = '';
-}
-function permite(e){ e.preventDefault(); }
-function soltar(e, cat) {
-  e.preventDefault();
-  const id = e.dataTransfer.getData('text/plain');
-  if (id) soltarTap(id, cat);
-}
-function calificar() {
-  const faltan = CONCEPTOS.filter(c => !asignaciones[c.id]);
-  if (faltan.length) { document.getElementById('veredicto').textContent = 'Faltan ' + faltan.length + ' concepto(s) por clasificar.'; return; }
-  let ok = 0; const errores = [];
-  CONCEPTOS.forEach(c => {
-    if (asignaciones[c.id] === c.cat) ok++;
-    else errores.push('"' + c.txt + '" → ' + NOMBRES[c.cat] + ': ' + c.exp);
-  });
-  let v = '✔ ' + ok + '/' + CONCEPTOS.length + ' correctas. ';
-  if (errores.length) { v += 'Repase:'; v += '<ul style="margin:6px 0 0 18px; padding:0; text-align:left">' + errores.map(e => '<li style="font-weight:400">' + e + '</li>').join('') + '</ul>'; }
-  document.getElementById('veredicto').innerHTML = v;
-  if (ok === CONCEPTOS.length) {
-    document.getElementById('conector1').classList.add('desbloqueado');
-    document.getElementById('etiqueta1').textContent = '✔ clasificación correcta: el costo unitario es confiable y habilita los objetivos ↑';
-  } else {
-    document.getElementById('conector1').classList.remove('desbloqueado');
+function draw(){
+ const svg = $('wires'), box = $('circuit').getBoundingClientRect(), mobile = window.innerWidth <= 700;
+ svg.setAttribute('viewBox',`0 0 ${box.width} ${box.height}`);
+ svg.querySelectorAll('.wire').forEach(p => p.remove());
+ edges.forEach(([from,to],index) => {
+  const a = nodes.get(from).getBoundingClientRect(), b = nodes.get(to).getBoundingClientRect();
+  let d;
+  if(mobile){
+   const x1=a.left-box.left, y1=a.top-box.top+a.height/2, x2=b.left-box.left, y2=b.top-box.top+b.height/2;
+   const rail=5+(index%4)*4;
+   d=`M ${x1} ${y1} C ${rail} ${y1},${rail} ${y1},${rail} ${y1+15} L ${rail} ${y2-15} Q ${rail} ${y2},${x2} ${y2}`;
+  }else if(Math.abs(a.left-b.left)<10){
+   const x=a.left-box.left+a.width/2;
+   d=`M ${x} ${a.bottom-box.top} L ${x} ${b.top-box.top}`;
+  }else{
+   const x1=a.right-box.left,y1=a.top-box.top+a.height/2,x2=b.left-box.left,y2=b.top-box.top+b.height/2,m=(x1+x2)/2;
+   d=`M ${x1} ${y1} C ${m} ${y1},${m} ${y2},${x2} ${y2}`;
   }
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+  path.setAttribute('d',d);path.setAttribute('class','wire'+(['gerente','publicidad','gasto','expensa'].includes(from)?' expense':''));
+  path.setAttribute('marker-end','url(#arrow)');path.dataset.from=from;path.dataset.to=to;svg.appendChild(path);
+ });
+ highlight(active);
 }
-function reiniciar(){ iniciar(); }
-iniciar();
+function stop(){clearInterval(timer);timer=null;$('play').textContent='Animar flujo completo →';$('play').setAttribute('aria-label','Animar flujo completo');}
+function advance(){
+ step=(step+1)%steps.length;
+ highlight(steps[step][0]);$('status').textContent=`Paso ${step+1} de ${steps.length}. ${steps[step][1]}`;
+ if(step===steps.length-1)stop();
+}
+function openDetail(id){
+ stop();const entry=data[id], node=nodes.get(id);
+ highlight([id,...entry[2]]);
+ $('detail-kind').textContent=entry[0];$('detail-title').textContent=node.querySelector('strong').textContent;
+ $('detail-text').textContent=entry[1];$('detail-citation').textContent=entry[3]||'';
+ $('related').replaceChildren();
+ entry[2].forEach(target=>{const button=document.createElement('button');button.className='action';button.textContent=nodes.get(target).querySelector('strong').textContent+' →';button.setAttribute('aria-label','Explorar: '+button.textContent);button.addEventListener('click',()=>openDetail(target));$('related').appendChild(button);});
+ if(!$('detail').open)$('detail').showModal();
+ $('close').focus();
+}
+nodes.forEach((node,id)=>{node.setAttribute('aria-label','Explorar: '+node.querySelector('strong').textContent);node.setAttribute('aria-haspopup','dialog');node.setAttribute('aria-controls','detail');node.addEventListener('click',()=>openDetail(id));});
+$('close').addEventListener('click',()=>$('detail').close());
+$('next').addEventListener('click',()=>{stop();advance();});
+$('play').addEventListener('click',()=>{
+ if(timer){stop();return;}
+ if(reduced.matches){advance();return;}
+ if(step===steps.length-1)step=-1;
+ timer=setInterval(advance,5200);$('play').textContent='Pausar recorrido';$('play').setAttribute('aria-label','Pausar recorrido');advance();
+});
+$('reset').addEventListener('click',()=>{stop();step=-1;highlight([]);$('status').textContent='Circuito completo. MPD + MOD = costo primo; MPD + MOD + CIF forman el costo del producto. Los gastos del periodo se expensan de inmediato.';});
+reduced.addEventListener('change',()=>stop());
+let frame;
+new ResizeObserver(()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(draw);}).observe($('circuit'));
+draw();
 </script>
 </body>
 </html>
