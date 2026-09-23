@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>E2 · Diagrama interactivo — Objetivos de la contabilidad de costos y clasificación del costo</title>
+<style>
+  :root { --azul:#003366; --rojo:#b71c1c; --verde:#1b5e20; --ambar:#e65100; }
+  * { box-sizing:border-box; }
+  body { font-family:'Segoe UI',Roboto,Arial,sans-serif; margin:0; background:#fafafa; color:#212121; }
+  header { background:var(--azul); color:#fff; padding:18px 28px; }
+  header h1 { margin:0; font-size:1.3rem; }
+  header p { margin:4px 0 0; font-size:.85rem; opacity:.9; }
+  .seccion { padding:22px 28px; }
+  .seccion h2 { color:var(--azul); border-bottom:2px solid var(--azul); padding-bottom:6px; }
+  /* Objetivos: acordeón */
+  details.obj { background:#fff; border:1px solid #cfd8dc; border-radius:8px; margin:10px 0; padding:10px 16px; }
+  details.obj summary { font-weight:600; cursor:pointer; font-size:.98rem; }
+  details.obj p { margin:8px 0 2px; font-size:.9rem; line-height:1.5; }
+  /* Clasificador: quiz de clasificación por naturaleza */
+  .quiz { background:#fff; border:1px solid #cfd8dc; border-radius:10px; padding:18px 22px; max-width:760px; }
+  .quiz h3 { margin-top:0; color:var(--rojo); }
+  .concepto { font-size:1.05rem; font-weight:600; margin:14px 0 10px; }
+  .opciones button { display:block; width:100%; text-align:left; margin:7px 0; padding:10px 14px; border-radius:8px; border:1px solid #b0bec5; background:#fff; cursor:pointer; font-size:.93rem; }
+  .opciones button:hover { background:#eceff1; }
+  .correcto { background:#e8f5e9 !important; border-color:var(--verde) !important; }
+  .incorrecto { background:#ffebee !important; border-color:var(--rojo) !important; }
+  .resultado { margin-top:12px; font-weight:600; }
+  .siguiente { margin-top:12px; padding:8px 16px; background:var(--azul); color:#fff; border:none; border-radius:6px; cursor:pointer; }
+  footer { padding:16px 28px; font-size:.8rem; color:#607d8b; line-height:1.5; }
+  footer strong { color:#37474f; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Diagrama interactivo: objetivos de la contabilidad de costos y clasificación del costo por su naturaleza</h1>
+  <p>Guía 3 · Universidad EAN · Grupo 1 · 2026 · Interacción: despliegue cada objetivo y responda el clasificador de costos.</p>
+</header>
+
+<div class="seccion">
+  <h2>Parte A — Objetivos de la contabilidad de costos</h2>
+
+  <details class="obj" open>
+    <summary>1. Determinar el costo de los productos (valuar inventarios)</summary>
+    <p>Acumular los tres elementos (MPD + MOD + CIF) a través del flujo: Inventario de Materias Primas → Productos en Proceso → Productos Terminados → Costo de Ventas, para calcular el costo unitario y valuar los inventarios en el Balance General.</p>
+  </details>
+  <details class="obj">
+    <summary>2. Base para la fijación de precios y decisiones de mezcla</summary>
+    <p>El costo unitario y el margen de contribución permiten fijar precios de venta, aceptar o rechazar órdenes especiales y decidir qué líneas de producto mantener, potenciar o eliminar.</p>
+  </details>
+  <details class="obj">
+    <summary>3. Control y planeación de las operaciones</summary>
+    <p>Los costos estándar y los presupuestos (Mendoza Roca, 2017) permiten comparar lo real contra lo planeado, detectar desviaciones y aplicar medidas correctivas en cada centro de responsabilidad.</p>
+  </details>
+  <details class="obj">
+    <summary>4. Medición de resultados por periodo</summary>
+    <p>Separar costos de producto (inventariables) de costos del periodo (expensados de inmediato) hace posible preparar el Estado de Resultados tanto por costeo total (absorbente) como por costeo variable.</p>
+  </details>
+</div>
+
+<div class="seccion">
+  <h2>Parte B — Clasificador interactivo: ¿a qué elemento del costo pertenece?</h2>
+  <div class="quiz" id="quiz">
+    <h3>Clasifique cada concepto por su naturaleza</h3>
+    <div class="concepto" id="pregunta"></div>
+    <div class="opciones" id="opciones"></div>
+    <div class="resultado" id="resultado"></div>
+    <button class="siguiente" id="siguiente" onclick="siguiente()" style="display:none">Siguiente concepto →</button>
+  </div>
+</div>
+
+<footer>
+  <strong>Referencias (APA 7):</strong><br>
+  Reveles López, R. (2017). <em>Análisis de los elementos del costo</em>. Instituto Mexicano de Contadores Públicos. Capítulo 1. Disponible en bases de datos E-libro: https://elibro-net.bdbiblioteca.universidadean.edu.co/es/ereader/bibliotecaean/116352<br>
+  Barrera Arias, G. S. (2026). <em>Tutoría No. 7A: Costos y presupuestos (Fase III)</em> [Diapositivas]. Universidad EAN.
+</footer>
+
+<script>
+const casoderon = [
+  { q: 'Melaza, agua y levadura para producir ron', r: 'MPD', exp: 'Material que forma parte física del producto terminado: materia prima directa.' },
+  { q: 'Salario de los operarios de destilación', r: 'MOD', exp: 'Mano de obra que transforma directamente la materia prima.' },
+  { q: 'Carbonato y barriles usados en la producción', r: 'CIF', exp: 'Insumos indirectos y envases: no se pueden rastrear con precisión a cada unidad → CIF.' },
+  { q: 'Salario del gerente y del contador de la planta', r: 'Gasto', exp: 'Costos del periodo: administración, no se inventarían.' },
+  { q: 'Publicidad y comisiones de vendedores', r: 'Gasto', exp: 'Gastos de mercadeo y ventas: del periodo, nunca del producto.' },
+  { q: 'Servicios públicos de la planta de producción', r: 'CIF', exp: 'Servicios de fábrica: no son MP ni MOD → costos indirectos de fabricación (inventariables).' },
+];
+const etiquetas = {
+  MPD: 'Materia Prima Directa',
+  MOD: 'Mano de Obra Directa',
+  CIF: 'Costo Indirecto de Fabricación (inventariable)',
+  Gasto: 'Costo del Periodo / Gasto',
+};
+let i = 0, aciertos = 0;
+function render() {
+  const p = casoderon[i];
+  document.getElementById('pregunta').textContent = (i+1) + '. ' + p.q;
+  const cont = document.getElementById('opciones');
+  cont.innerHTML = '';
+  document.getElementById('resultado').textContent = '';
+  document.getElementById('siguiente').style.display = 'none';
+  Object.keys(etiquetas).forEach(k => {
+    const b = document.createElement('button');
+    b.textContent = etiquetas[k];
+    b.onclick = () => responder(b, k);
+    cont.appendChild(b);
+  });
+}
+function responder(btn, k) {
+  const p = casoderon[i];
+  [...document.getElementById('opciones').children].forEach(b => b.disabled = true);
+  if (k === p.r) { btn.classList.add('correcto'); aciertos++; document.getElementById('resultado').textContent = '✔ Correcto. ' + p.exp; }
+  else { btn.classList.add('incorrecto'); const ok=[...document.getElementById('opciones').children][Object.keys(etiquetas).indexOf(p.r)]; ok.classList.add('correcto'); document.getElementById('resultado').textContent = '✘ La respuesta correcta es: ' + etiquetas[p.r] + '. ' + p.exp; }
+  document.getElementById('siguiente').style.display = 'inline-block';
+  document.getElementById('siguiente').textContent = (i < casoderon.length-1) ? 'Siguiente concepto →' : 'Ver resumen →';
+}
+function siguiente() {
+  if (i < casoderon.length-1) { i++; render(); }
+  else { document.getElementById('quiz').innerHTML = '<h3>Resumen</h3><p>Acertaste ' + aciertos + ' de ' + casoderon.length + ' conceptos.</p><p><strong>Lectura de refuerzo:</strong> Reveles López (2017), capítulo 1 — "Conceptos de costo" (p. 21) y "Clasificación de los costos" (p. 27).</p>'; }
+}
+render();
+</script>
+</body>
+</html>
